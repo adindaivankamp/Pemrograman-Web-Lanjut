@@ -69,7 +69,44 @@ class UserController extends Controller
         // dd($user);
         // return view('user', ['data' => $user]);
 
-        $jumlahPengguna = UserModel::where('level_id', 2)->count(); //menampilkan sesuai jobsheet
-        return view('user', compact('jumlahPengguna'));
+        // $jumlahPengguna = UserModel::where('level_id', 2)->count(); //menampilkan sesuai jobsheet
+        // return view('user', compact('jumlahPengguna'));
+
+        // Mencari data di tabel UserModel dengan 'username' = 'manager' dan 'nama' = 'Manager'.
+        // Jika data ditemukan, akan mengambil data tersebut.
+        // Jika data tidak ditemukan, akan membuat (insert) data baru dengan nilai yang diberikan.
+        // $user = UserModel::firstOrCreate(
+        //     [
+        //         'username' => 'manager',
+        //         'nama' => 'Manager'
+        //     ],
+        // );
+        // $user = UserModel::firstOrCreate(
+        //     [
+        //         'username' => 'manager22',
+        //         'nama' => 'Manager Dua Dua',
+        //         'password' => Hash::make('12345'),
+        //         'level_id' => 2
+        //     ],
+        // );
+
+        // Mencari data pengguna (user) pertama yang memiliki username 'manager' dan nama 'Manager'.
+        // Jika tidak ditemukan, maka akan membuat instance baru dari UserModel dengan data tersebut, tanpa menyimpannya ke database.
+        // $user = UserModel::firstOrNew(
+        //     [
+        //         'username' => 'manager',
+        //         'nama' => 'Manager',
+        //     ],
+        // );
+        $user = UserModel::firstOrNew(
+            [
+                'username' => 'manager33',
+                'nama' => 'Manager Tiiga Tiga',
+                'password' => Hash::make('12345'),
+                'level_id' => 2
+            ],
+        );
+        $user->save();
+        return view('user', ['data' => $user]);
     }
 }
