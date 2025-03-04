@@ -61,7 +61,15 @@ class UserController extends Controller
 
         // Mencari data UserModel dengan username 'manager9'.
         // Jika data tidak ditemukan, otomatis akan menampilkan error 404 (ModelNotFoundException)
-        $user = UserModel::where('username', 'manager9')->firstOrFail();
-        return view('user', ['data' => $user]);
+        // $user = UserModel::where('username', 'manager9')->firstOrFail();
+
+        // Menghitung jumlah data di tabel UserModel yang memiliki level_id = 2,
+        // lalu menampilkan hasilnya menggunakan dd() (dump and die).
+        // $user = UserModel::where('level_id', 2)->count();
+        // dd($user);
+        // return view('user', ['data' => $user]);
+
+        $jumlahPengguna = UserModel::where('level_id', 2)->count(); //menampilkan sesuai jobsheet
+        return view('user', compact('jumlahPengguna'));
     }
 }
