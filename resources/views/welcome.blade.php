@@ -1,4 +1,4 @@
-@extends('layout.app')  {{--memanggil folder layout,file app --}}
+@extends('layouts.app')  {{--memanggil folder layouts,file app --}}
 
 {{-- customize layout sections --}}
 @section('subtitle', 'Welcome') {{-- Menetapkan subtitle halaman menjadi "Welcome" --}}
