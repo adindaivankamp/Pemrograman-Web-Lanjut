@@ -41,23 +41,25 @@ class KategoriDataTable extends DataTable
     public function html(): HtmlBuilder
     {
         return $this->builder()
-                    ->setTableId('kategori-table')
-                    ->columns($this->getColumns())
-                    ->minifiedAjax()
-                    ->dom('Bfrtip')
-                    ->orderBy(1)
-                    ->selectStyleSingle()
-                    ->buttons([
-                        Button::make('excel'),
-                        Button::make('csv'),
-                        Button::make('pdf'),
-                        Button::make('print'),
-                        Button::make('reset'),
-                        Button::make('reload')
-                    ]);
+            ->setTableId('kategori-table')
+            ->columns($this->getColumns())
+            ->minifiedAjax()
+            ->dom('<"row"<"col-md-12 mb-2"B>>' . // Tombol export di atas, rata kiri
+                '<"row align-items-center"<"col-md-6"l><"col-md-6 text-end"f>>' . // Show entries & search sejajar
+                'rt' . // Tabel
+                '<"row align-items-center"<"col-md-6 d-flex align-items-center"i><"col-md-6 d-flex justify-content-end p-0"p>>') // Pagination tanpa jarak
+            ->orderBy(1)
+            ->selectStyleSingle()
+            ->buttons([
+                Button::make('excel'),
+                Button::make('csv'),
+                Button::make('pdf'),
+                Button::make('print'),
+                Button::make('reset'),
+                Button::make('reload')
+            ]);
     }
-
-    /**
+    /*
      * Get the dataTable columns definition.
      */
     public function getColumns(): array

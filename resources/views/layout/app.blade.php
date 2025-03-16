@@ -5,7 +5,7 @@
     @hasSection('subtitle') | @yield('subtitle') @endif {{-- Jika ada section subtitle, maka akan ditampilkan setelah title dengan pemisah "|" --}}
 @endsection
 
-@vite('resources\js\app.js') {{--Menghubungkan file JavaScript dengan Vite untuk bundling dan optimalisasi --}}
+@vite('resources/js/app.js') {{--Menghubungkan file JavaScript dengan Vite untuk bundling dan optimalisasi --}}
 
 {{-- extend and customize the page content header --}}
 @section('content_header')
@@ -46,6 +46,7 @@
 @push('js')
    <script src="https://cdn.datatables.net/2.0.2/js/dataTables.js">
         // $(document).ready(function(){
+        //     $('#tabelKategori').DataTable();
         //     //add your common script logic here..
         // });
 
@@ -56,8 +57,7 @@
 
 {{-- add cummon css customizations --}}
 @push('css')
-<link rel="stylesheet" href="https://cdn.datatables.net/2.0.2/css/dataTables.dataTables.css">
-
+<link rel="stylesheet" href="https://cdn.datatables.net/2.0.2/css/dataTables.dataTables.css" />
 <style type="text/css">
     /* you can add adminlte customizations here */
     /*.card-header{
