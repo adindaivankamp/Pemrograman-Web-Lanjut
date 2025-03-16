@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\DataTables\KategoriDataTable;
+use App\Models\KategoriModel;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -27,5 +28,17 @@ class KategoriController extends Controller
         // return view('kategori', ['data' => $data]);
 
         return $dataTable->render('kategori.index'); // Mengembalikan tampilan kategori.index dengan data dari DataTables
+    }
+
+    public function create(){
+        return view('kategori.create');  // Mengembalikan tampilan form untuk menambahkan kategori baru
+    }
+
+    public function store(Request $request){
+        KategoriModel::create([ // Menyimpan data kategori baru ke dalam database menggunakan model KategoriModel
+            'kategori_kode' => $request->kodeKategori,
+            'kategori_nama' => $request->namaKategori
+        ]);
+        return redirect('/kategori');  // Mengalihkan kembali ke halaman daftar kategori setelah data berhasil disimpan
     }
 }
