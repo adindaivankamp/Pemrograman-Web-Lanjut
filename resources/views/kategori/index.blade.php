@@ -11,12 +11,13 @@
         <div class="card-header">Manage Kategori</div>
         <div class="card-body">
             {{ $dataTable->table() }}
-        </div>
-        <div class="card-footer text-end">
             <a href="{{ url('/kategori/create') }}" class="btn btn-primary">
-                <i class="bi bi-plus-lg"></i> Add Kategori
+                <i class="bi bi-plus-lg"></i>Add Kategori
             </a>
         </div>
+        {{-- <div class="card-footer text-end">
+            
+        </div> --}}
     </div>
 </div>
 @endsection
