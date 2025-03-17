@@ -15,13 +15,32 @@
                 <i class="bi bi-plus-lg"></i>Add Kategori
             </a>
         </div>
-        {{-- <div class="card-footer text-end">
-            
-        </div> --}}
     </div>
 </div>
 @endsection
 
 @push('scripts')
     {{ $dataTable->scripts() }}
+
+    <script>
+        $(document).on('click', '.btn-delete', function(e) {
+            e.preventDefault();
+            let url = $(this).data('url');
+
+            if (confirm('Apakah Anda yakin ingin menghapus kategori ini?')) {
+                $.ajax({
+                    url: url,
+                    type: 'DELETE',
+                    data: { _token: '{{ csrf_token() }}' },
+                    success: function(response) {
+                        alert(response.message);
+                        window.LaravelDataTables["kategori-table"].ajax.reload();
+                    },
+                    error: function(xhr) {
+                        alert('Terjadi kesalahan, coba lagi.');
+                    }
+                });
+            }
+        });
+    </script>
 @endpush

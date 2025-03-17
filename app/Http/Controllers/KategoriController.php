@@ -9,7 +9,8 @@ use Illuminate\Support\Facades\DB;
 
 class KategoriController extends Controller
 {
-    public function index(KategoriDataTable $dataTable){
+    public function index(KategoriDataTable $dataTable)
+    {
         // $data = [
         //     'kategori_kode' => 'SNK',
         //     'kategori_nama' => 'Snack/Makanan Ringan',
@@ -30,15 +31,47 @@ class KategoriController extends Controller
         return $dataTable->render('kategori.index'); // Mengembalikan tampilan kategori.index dengan data dari DataTables
     }
 
-    public function create(){
+    public function create()
+    {
         return view('kategori.create');  // Mengembalikan tampilan form untuk menambahkan kategori baru
     }
 
-    public function store(Request $request){
+    public function store(Request $request)
+    {
         KategoriModel::create([ // Menyimpan data kategori baru ke dalam database menggunakan model KategoriModel
             'kategori_kode' => $request->kodeKategori,
             'kategori_nama' => $request->namaKategori
         ]);
         return redirect('/kategori');  // Mengalihkan kembali ke halaman daftar kategori setelah data berhasil disimpan
+    }
+    public function edit($id)
+    {
+        $kategori = KategoriModel::findOrFail($id);
+        return view('kategori.edit', compact('kategori'));
+    }
+
+    public function update(Request $request, $id)
+    {
+        $request->validate([
+            'kodeKategori' => 'required|string|max:255',
+            'namaKategori' => 'required|string|max:255',
+        ]);
+
+        $kategori = KategoriModel::findOrFail($id);
+
+        $kategori->update([
+            'kategori_kode' => $request->kodeKategori,
+            'kategori_nama' => $request->namaKategori,
+        ]);
+
+        return redirect()->route('kategori.index')->with('success', 'Kategori berhasil diperbarui!');
+    }
+
+    public function destroy($id)
+    {
+        $kategori = KategoriModel::findOrFail($id);
+        $kategori->delete();
+
+        return response()->json(['message' => 'Kategori berhasil dihapus!']);
     }
 }
