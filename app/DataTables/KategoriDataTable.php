@@ -25,15 +25,18 @@ class KategoriDataTable extends DataTable
         return (new EloquentDataTable($query))
             ->addColumn('action', function ($row) {
                 return '
-            <div class="btn-group" role="group">
-                <a href="' . route('kategori.edit', $row->kategori_id) . '" class="btn btn-warning btn-sm">
-                    ✏ Edit
-                </a>
-                <button data-url="' . url('/kategori' . $row->kategori_id) . '" 
-                    class="btn btn-danger btn-sm btn-delete">
-                    🗑 Hapus
-                </button>
-            </div>
+            <div style="display: flex; gap: 5px; align-items: center;">
+    <a href="' . route('kategori.edit', $row->kategori_id) . '" class="btn btn-warning btn-sm" style="width: 80px; height: 36px; display: flex; justify-content: center; align-items: center;">
+        ✏ Edit
+    </a>
+    <form action="' . route('kategori.destroy', $row->kategori_id) . '" method="POST" onsubmit="return confirm(\'Apakah Anda yakin ingin menghapus kategori ini?\');" style="margin: 0;">
+        ' . csrf_field() . '
+        ' . method_field('DELETE') . '
+        <button type="submit" class="btn btn-danger btn-sm" style="width: 80px; height: 36px; display: flex; justify-content: center; align-items: center;">
+            🗑 Hapus
+        </button>
+    </form>
+</div>
             ';
             })
             ->rawColumns(['action'])
