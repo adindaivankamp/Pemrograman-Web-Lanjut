@@ -28,9 +28,8 @@ class SupplierController extends Controller
         $suppliers = SupplierModel::select('supplier_id', 'supplier_kode', 'supplier_nama', 'supplier_alamat');
 
         return DataTables::of($suppliers)
-            // menambahkan kolom index / no urut (default nama kolom: DT_RowIndex)
             ->addIndexColumn()
-            ->addColumn('aksi', function ($supplier) { // menambahkan kolom aksi
+            ->addColumn('aksi', function ($supplier) {
                 $btn = '<a href="' . url('/supplier/' . $supplier->supplier_id) . '" class="btn btn-info btn-sm">Detail</a> ';
                 $btn .= '<a href="' . url('/supplier/' . $supplier->supplier_id . '/edit') . '" class="btn btn-warning btn-sm">Edit</a> ';
                 $btn .= '<form class="d-inline-block" method="POST" action="' .
@@ -39,7 +38,7 @@ class SupplierController extends Controller
                     '<button type="submit" class="btn btn-danger btn-sm" onclick="return confirm(\'Apakah Anda yakin menghapus data ini?\');">Hapus</button></form>';
                 return $btn;
             })
-            ->rawColumns(['aksi']) // memberitahu bahwa kolom aksi adalah html
+            ->rawColumns(['aksi'])
             ->make(true);
     }
     public function create()
@@ -53,7 +52,7 @@ class SupplierController extends Controller
             'title' => 'Tambah supplier baru'
         ];
 
-        $activeMenu = 'supplier'; // set menu yang sedang aktif
+        $activeMenu = 'supplier';
 
         return view('supplier.create', ['breadcrumb' => $breadcrumb, 'page' => $page, 'activeMenu' => $activeMenu]);
     }
@@ -86,7 +85,7 @@ class SupplierController extends Controller
             'title' => 'Detail supplier'
         ];
 
-        $activeMenu = 'supplier'; // set menu yang sedang aktif
+        $activeMenu = 'supplier';
 
         return view('supplier.show', [
             'breadcrumb' => $breadcrumb,
@@ -108,7 +107,7 @@ class SupplierController extends Controller
             'title' => 'Edit supplier'
         ];
 
-        $activeMenu = 'supplier'; // set menu yang sedang aktif
+        $activeMenu = 'supplier';
 
         return view('supplier.edit', ['breadcrumb' => $breadcrumb, 'page' => $page, 'supplier' => $supplier, 'activeMenu' => $activeMenu]);
     }
@@ -136,11 +135,10 @@ class SupplierController extends Controller
         }
 
         try {
-            SupplierModel::destroy($id); // Hapus data supplier
+            SupplierModel::destroy($id);
 
             return redirect('/supplier')->with('success', 'Data supplier berhasil dihapus');
         } catch (\Illuminate\Database\QueryException $e) {
-            // Jika terjadi error ketika menghapus data, redirect kembali ke halaman dengan membawa pesan error
             return redirect('/supplier')->with('error', 'Data supplier gagal dihapus karena masih terdapat tabel lain yang terkait dengan data ini');
         }
     }
