@@ -321,11 +321,6 @@ return [
             'can' => 'manage-blog',
         ],
         [
-            'text' => 'Manage Kategori',
-            'url' => '/kategori',
-            'icon' => 'far fa-fw fa-file',
-        ],
-        [
             'text' => 'pages',
             'url' => 'admin/pages',
             'icon' => 'far fa-fw fa-file',
@@ -381,7 +376,6 @@ return [
                 ],
             ],
         ],
-        
         ['header' => 'labels'],
         [
             'text' => 'important',
