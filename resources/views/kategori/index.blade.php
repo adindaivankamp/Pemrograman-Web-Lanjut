@@ -20,7 +20,7 @@
             <table class="table table-bordered table-striped table-hover table-sm" id="table_kategori">
                 <thead>
                     <tr>
-                        <th>No</th>
+                        <th>ID</th>
                         <th>Kategori ID</th>
                         <th>Kode Kategori</th>
                         <th>Nama Kategori</th>
