@@ -294,7 +294,7 @@ class LevelController extends Controller
                 } catch (\Illuminate\Database\QueryException $e) {
                     return response()->json([
                         'status' => false,
-                        'message' => 'Data user gagal dihapus karena masih terdapat tabel lain yang terkait dengan data ini'
+                        'message' => 'Data level gagal dihapus karena masih terdapat tabel lain yang terkait dengan data ini'
                     ]);
                 }
             }
