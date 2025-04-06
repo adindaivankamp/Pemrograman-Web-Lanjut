@@ -6,6 +6,8 @@
             <h3 class="card-title mb-0">{{ $page->title }}</h3>
             <div class="ml-auto">
                 <a class="btn btn-sm btn-primary" href="{{ url('barang/create') }}">Tambah</a>
+                <button onclick="modalAction('{{ url('barang/create_ajax') }}')" class="btn btn-sm btn-success mt-1">Tambah
+                    Ajax</button>
             </div>
         </div>
         <div class="card-body">
@@ -47,12 +49,22 @@
             </div>
         </div>
     </div>
+
+    <div id="myModal" class="modal fade animate shake" tabindex="-1" role="dialog" data- backdrop="static"
+        data-keyboard="false" data-width="75%" aria-hidden="true"></div>
 @endsection
 
 @push('js')
     <script>
+        function modalAction(url = '') {
+            $('#myModal').load(url, function() {
+                $('#myModal').modal('show');
+            });
+        }
+
+        var dataBarang;
         $(document).ready(function() {
-            var dataBarang = $('#table_barang').DataTable({
+            dataBarang = $('#table_barang').DataTable({
                 serverSide: true,
                 ajax: {
                     url: "{{ url('barang/list') }}",
@@ -61,8 +73,7 @@
                         d.kategori_id = $('#kategori_id').val();
                     }
                 },
-                columns: [
-                    {
+                columns: [{
                         data: "DT_RowIndex",
                         className: "text-center align-middle",
                         orderable: false,

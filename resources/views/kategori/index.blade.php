@@ -21,7 +21,6 @@
                 <thead>
                     <tr>
                         <th>ID</th>
-                        <th>Kategori ID</th>
                         <th>Kode Kategori</th>
                         <th>Nama Kategori</th>
                         <th>Aksi</th>
@@ -59,12 +58,6 @@
                         className: "text-center",
                         orderable: false,
                         searchable: false
-                    },
-                    {
-                        data: "kategori_id",
-                        className: "",
-                        orderable: true,
-                        searchable: true
                     },
                     {
                         data: "kategori_kode",

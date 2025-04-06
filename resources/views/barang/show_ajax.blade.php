@@ -1,4 +1,4 @@
-@empty($kategori)
+@empty($barang)
  <div id="modal-master" class="modal-dialog modal-lg" role="document">
      <div class="modal-content">
          <div class="modal-header">
@@ -20,7 +20,7 @@
  <div id="modal-master" class="modal-dialog modal-lg" role="document">
      <div class="modal-content">
          <div class="modal-header">
-             <h5 class="modal-title" id="exampleModalLabel">Detail Data Kategori</h5>
+             <h5 class="modal-title" id="exampleModalLabel">Detail Data Barang</h5>
              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                  <span aria-hidden="true">&times;</span>
              </button>
@@ -28,16 +28,28 @@
          <div class="modal-body">
              <table class="table table-bordered table-striped table-hover table-sm">
                  <tr>
-                     <th>Kategori ID</th>
-                     <td>{{ $kategori->kategori_id }}</td>
+                     <th>ID</th>
+                     <td>{{ $barang->barang_id }}</td>
                  </tr>
                  <tr>
-                     <th>Kategori Kode</th>
-                     <td>{{ $kategori->kategori_kode }}</td>
+                     <th>Kategori</th>
+                     <td>{{ $barang->kategori->kategori_nama }}</td>
                  </tr>
                  <tr>
-                     <th>Nama kategori</th>
-                     <td>{{ $kategori->kategori_nama }}</td>
+                     <th>Kode Barang</th>
+                     <td>{{ $barang->barang_kode }}</td>
+                 </tr>
+                 <tr>
+                     <th>Harga Beli</th>
+                     <td>Rp {{ number_format($barang->harga_beli, 0, ',', '.') }}</td>
+                 </tr>
+                 <tr>
+                     <th>Harga Jual</th>
+                     <td>Rp {{ number_format($barang->harga_beli, 0, ',', '.') }}</td>
+                 </tr>
+                 <tr>
+                     <th>Supplier</th>
+                     <td>{{ $barang->supplier->supplier_nama }}</td>
                  </tr>
              </table>
          </div>
