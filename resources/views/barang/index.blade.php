@@ -3,8 +3,10 @@
 @section('content')
     <div class="card card-outline card-primary">
         <div class="card-header d-flex justify-content-between align-items-center">
-            <h3 class="card-title">{{ $page->title }}</h3>
-            <a class="btn btn-sm btn-primary" href="{{ url('barang/create') }}">Tambah</a>
+            <h3 class="card-title mb-0">{{ $page->title }}</h3>
+            <div class="ml-auto">
+                <a class="btn btn-sm btn-primary" href="{{ url('barang/create') }}">Tambah</a>
+            </div>
         </div>
         <div class="card-body">
             @if (session('success'))
@@ -26,6 +28,7 @@
                     <small class="form-text text-muted">Pilih kategori barang untuk memfilter data</small>
                 </div>
             </div>
+
             <div class="table-responsive">
                 <table class="table table-bordered table-striped table-hover table-sm" id="table_barang" width="100%">
                     <thead class="text-center">
@@ -58,7 +61,8 @@
                         d.kategori_id = $('#kategori_id').val();
                     }
                 },
-                columns: [{
+                columns: [
+                    {
                         data: "DT_RowIndex",
                         className: "text-center align-middle",
                         orderable: false,

@@ -1,5 +1,5 @@
 @extends('layouts.template')
- 
+
 @section('content')
 <div class="card card-outline card-primary">
     <div class="card-header">
@@ -18,9 +18,10 @@
         <table class="table table-bordered table-striped table-hover table-sm" id="table_supplier">
             <thead>
                 <tr>
-                    <th>No</th>
-                    <th>Kode Supplier</th>
+                    <th>ID</th>
                     <th>Nama Supplier</th>
+                    <th>Alamat Supplier</th>
+                    <th>Telepon Supplier</th>
                     <th>Aksi</th>
                 </tr>
             </thead>
@@ -28,18 +29,23 @@
     </div>
 </div>
 @endsection
- 
+
 @push('css')
 @endpush
- 
+
 @push('js')
 <script>
     $(document).ready(function() {
         $('#table_supplier').DataTable({
             serverSide: true,
+            processing: true,
             ajax: {
                 url: "{{ url('supplier/list') }}",
-                type: "POST"
+                type: "POST",
+                dataType: "json",
+                headers: {
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                }
             },
             columns: [
                 {
@@ -49,12 +55,17 @@
                     searchable: false
                 },
                 {
-                    data: "supplier_kode",
+                    data: "supplier_nama",
                     orderable: true,
                     searchable: true
                 },
                 {
-                    data: "supplier_nama",
+                    data: "supplier_alamat",
+                    orderable: true,
+                    searchable: true
+                },
+                {
+                    data: "supplier_telp",
                     orderable: true,
                     searchable: true
                 },
