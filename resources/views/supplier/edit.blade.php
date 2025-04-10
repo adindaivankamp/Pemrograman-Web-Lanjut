@@ -17,6 +17,17 @@
             <form method="POST" action="{{ url('/supplier/' . $supplier->supplier_id) }}" class="form-horizontal">
                 @csrf
                 @method('PUT')
+
+                <div class="form-group row">
+                    <label for="supplier_kode" class="col-1 control-label col-form-label">Kode Supplier</label>
+                    <div class="col-11">
+                        <input type="text" class="form-control" id="supplier_kode" name="supplier_kode" value="{{ old('supplier_kode', $supplier->supplier_kode) }}" required>
+                        @error('supplier_kode')
+                            <small class="form-text text-danger">{{ $message }}</small>
+                        @enderror
+                    </div>
+                </div>
+
                 <div class="form-group row">
                     <label for="supplier_nama" class="col-1 control-label col-form-label">Nama Supplier</label>
                     <div class="col-11">
@@ -26,6 +37,7 @@
                         @enderror
                     </div>
                 </div>
+
                 <div class="form-group row">
                     <label for="supplier_alamat" class="col-1 control-label col-form-label">Alamat Supplier</label>
                     <div class="col-11">
@@ -35,6 +47,7 @@
                         @enderror
                     </div>
                 </div>
+
                 <div class="form-group row">
                     <label for="supplier_telp" class="col-1 control-label col-form-label">Telepon Supplier</label>
                     <div class="col-11">
@@ -44,6 +57,7 @@
                         @enderror
                     </div>
                 </div>
+
                 <div class="form-group row">
                     <label class="col-1 control-label col-form-label"></label>
                     <div class="col-11">

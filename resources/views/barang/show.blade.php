@@ -38,10 +38,6 @@
                          <th>Harga Jual</th>
                          <td>Rp {{ number_format($barang->harga_jual, 0, ',', '.') }}</td>
                      </tr>
-                     <tr>
-                         <th>Supplier</th>
-                         <td>{{ $barang->supplier->supplier_nama }}</td>
-                     </tr>
                  </table>
              @endempty
              <a href="{{ url('barang') }}" class="btn btn-sm btn-default mt-2">Kembali</a>

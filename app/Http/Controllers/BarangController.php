@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Models\KategoriModel;
-use App\Models\SupplierModel;
 use App\Models\BarangModel;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -33,8 +32,8 @@ class BarangController extends Controller
     // Ambil data barang dalam bentuk json untuk datatables
     public function list(Request $request)
     {
-        $barang = BarangModel::select('barang_id', 'kategori_id', 'barang_kode', 'barang_nama', 'harga_beli', 'harga_jual', 'supplier_id')
-            ->with(['kategori', 'supplier']); // Menggunakan array untuk multiple with
+        $barang = BarangModel::select('barang_id', 'kategori_id', 'barang_kode', 'barang_nama', 'harga_beli', 'harga_jual')
+            ->with(['kategori']); // Menggunakan array untuk multiple with
 
         // Filter data barang berdasarkan kategori_id
         if ($request->kategori_id) {
@@ -72,14 +71,12 @@ class BarangController extends Controller
         ];
 
         $kategori = KategoriModel::all(); // ambil data kategori untuk ditampilkan di form
-        $supplier = SupplierModel::all(); // ambil data supplier untuk ditampilkan di form
         $activeMenu = 'barang';       // set menu yang sedang aktif
 
         return view('barang.create', [
             'breadcrumb' => $breadcrumb,
             'page'       => $page,
             'kategori'   => $kategori,
-            'supplier'   => $supplier,
             'activeMenu' => $activeMenu
         ]);
     }
@@ -93,7 +90,6 @@ class BarangController extends Controller
             'harga_beli'  => 'required|integer',
             'harga_jual'  => 'required|integer',
             'kategori_id' => 'required|integer',
-            'supplier_id' => 'required|integer'
         ]);
 
         // Menyimpan data user baru
@@ -103,7 +99,6 @@ class BarangController extends Controller
             'harga_beli'  => $request->harga_beli,
             'harga_jual'  => $request->harga_jual,
             'kategori_id' => $request->kategori_id,
-            'supplier_id' => $request->supplier_id
         ]);
 
         // Redirect ke halaman barang dengan pesan sukses
@@ -113,7 +108,7 @@ class BarangController extends Controller
     // Menampilkan detail barang
     public function show(string $id)
     {
-        $barang = BarangModel::with(['kategori', 'supplier'])->find($id);
+        $barang = BarangModel::with(['kategori'])->find($id);
 
         $breadcrumb = (object) [
             'title' => 'Detail barang',
@@ -139,7 +134,6 @@ class BarangController extends Controller
     {
         $barang = BarangModel::find($id);
         $kategori = KategoriModel::all();
-        $supplier = SupplierModel::all();
 
         $breadcrumb = (object) [
             'title' => 'Edit Barang',
@@ -157,7 +151,6 @@ class BarangController extends Controller
             'page' => $page,
             'barang' => $barang,
             'kategori' => $kategori,
-            'supplier' => $supplier,
             'activeMenu' => $activeMenu
         ]);
     }
@@ -171,7 +164,6 @@ class BarangController extends Controller
             'harga_beli'  => 'required|integer',
             'harga_jual'  => 'required|integer',
             'kategori_id' => 'required|integer',
-            'supplier_id' => 'required|integer'
         ]);
 
         BarangModel::find($id)->update([
@@ -180,7 +172,6 @@ class BarangController extends Controller
             'harga_beli'  => $request->harga_beli,
             'harga_jual'  => $request->harga_jual,
             'kategori_id' => $request->kategori_id,
-            'supplier_id' => $request->supplier_id
         ]);
 
         return redirect('/barang')->with('success', 'Data barang berhasil diubah');
@@ -207,11 +198,9 @@ class BarangController extends Controller
     public function create_ajax()
      {
          $kategori = KategoriModel::all();
-         $supplier = SupplierModel::all();
          
          return view('barang.create_ajax', [
              'kategori' => $kategori,
-             'supplier' => $supplier
          ]);
      }
  
@@ -224,7 +213,6 @@ class BarangController extends Controller
                  'barang_nama' => 'required|string|max:100',
                  'harga_beli'  => 'required|integer',
                  'harga_jual'  => 'required|integer',
-                 'supplier_id' => 'required|integer' 
              ];
  
              // use Illuminate\Support\Facades\Validator;
@@ -251,12 +239,10 @@ class BarangController extends Controller
      {
          $barang = BarangModel::find($id);
          $kategori = KategoriModel::all();
-         $supplier = SupplierModel::all();
          
          return view('barang.edit_ajax', [
              'barang' => $barang,
              'kategori' => $kategori,
-             'supplier' => $supplier
          ]);
      }
  
@@ -270,7 +256,6 @@ class BarangController extends Controller
                  'barang_nama' => 'required|string|max:100',
                  'harga_beli'  => 'required|integer',
                  'harga_jual'  => 'required|integer',
-                 'supplier_id' => 'required|integer' 
              ];
  
              // use Illuminate\Support\Facades\Validator;
@@ -338,12 +323,10 @@ class BarangController extends Controller
      {
          $barang = barangModel::find($id);
          $kategori = KategoriModel::all();
-         $supplier = SupplierModel::all();
      
          return view('barang.show_ajax', [
              'barang' => $barang,
              'kategori' => $kategori,
-             'supplier' => $supplier
          ]);
      }
 }

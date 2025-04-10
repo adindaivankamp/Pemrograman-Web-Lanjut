@@ -82,20 +82,6 @@
                     </div>
                     <small id="error-harga_jual" class="error-text form-text text-danger"></small>
                 </div>
-
-                {{-- Supplier --}}
-                <div class="form-group">
-                    <label>Supplier</label>
-                    <select name="supplier_id" id="supplier_id" class="form-control" required>
-                        <option value="">- Pilih Supplier -</option>
-                        @foreach($supplier as $l)
-                            <option value="{{ $l->supplier_id }}" {{ $l->supplier_id == $barang->supplier_id ? 'selected' : '' }}>
-                                {{ $l->supplier_nama }}
-                            </option>
-                        @endforeach
-                    </select>
-                    <small id="error-supplier_id" class="error-text form-text text-danger"></small>
-                </div>
             </div>
 
             <div class="modal-footer">
@@ -114,8 +100,7 @@
                 barang_kode: { required: true, minlength: 3 },
                 barang_nama: { required: true, maxlength: 100 },
                 harga_beli: { required: true, number: true },
-                harga_jual: { required: true, number: true },
-                supplier_id: { required: true }
+                harga_jual: { required: true, number: true }
             },
             submitHandler: function (form) {
                 $.ajax({

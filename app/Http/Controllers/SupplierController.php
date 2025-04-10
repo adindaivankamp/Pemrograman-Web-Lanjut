@@ -27,7 +27,7 @@ class SupplierController extends Controller
 
     public function list()
     {
-        $supplier = SupplierModel::select('supplier_id', 'supplier_nama', 'supplier_alamat', 'supplier_telp');
+        $supplier = SupplierModel::select('supplier_id', 'supplier_kode', 'supplier_nama', 'supplier_alamat', 'supplier_telp');
 
         return DataTables::of($supplier)
             ->addIndexColumn()
@@ -57,12 +57,13 @@ class SupplierController extends Controller
     public function store(Request $request)
     {
         $request->validate([
+            'supplier_kode' => 'required|string|max:10|unique:m_supplier,supplier_kode',
             'supplier_nama' => 'required|string|max:100',
             'supplier_alamat' => 'required|string|max:100',
             'supplier_telp' => 'required|string|max:20',
         ]);
 
-        SupplierModel::create($request->only(['supplier_nama', 'supplier_alamat', 'supplier_telp']));
+        SupplierModel::create($request->only(['supplier_kode', 'supplier_nama', 'supplier_alamat', 'supplier_telp']));
 
         return redirect('/supplier')->with('success', 'Data supplier berhasil disimpan');
     }
@@ -100,12 +101,13 @@ class SupplierController extends Controller
     public function update(Request $request, string $id)
     {
         $request->validate([
+            'supplier_kode' => 'required|string|max:10|unique:m_supplier,supplier_kode,' . $id . ',supplier_id',
             'supplier_nama' => 'required|string|max:100',
             'supplier_alamat' => 'required|string|max:100',
             'supplier_telp' => 'required|string|max:20',
         ]);
 
-        SupplierModel::find($id)->update($request->only(['supplier_nama', 'supplier_alamat', 'supplier_telp']));
+        SupplierModel::find($id)->update($request->only(['supplier_kode', 'supplier_nama', 'supplier_alamat', 'supplier_telp']));
 
         return redirect('/supplier')->with('success', 'Data supplier berhasil diubah');
     }
@@ -136,6 +138,7 @@ class SupplierController extends Controller
     {
         if ($request->ajax()) {
             $rules = [
+                'supplier_kode' => 'required|string|max:10|unique:m_supplier,supplier_kode',
                 'supplier_nama' => 'required|string|max:100',
                 'supplier_alamat' => 'required|string|max:100',
                 'supplier_telp' => 'required|string|max:20'
@@ -151,7 +154,7 @@ class SupplierController extends Controller
                 ]);
             }
 
-            SupplierModel::create($request->only(['supplier_nama', 'supplier_alamat', 'supplier_telp']));
+            SupplierModel::create($request->only(['supplier_kode', 'supplier_nama', 'supplier_alamat', 'supplier_telp']));
 
             return response()->json([
                 'status' => true,
@@ -172,6 +175,7 @@ class SupplierController extends Controller
     {
         if ($request->ajax()) {
             $rules = [
+                'supplier_kode' => 'required|string|max:10|unique:m_supplier,supplier_kode,' . $id . ',supplier_id',
                 'supplier_nama' => 'required|string|max:100',
                 'supplier_alamat' => 'required|string|max:100',
                 'supplier_telp' => 'required|string|max:20'
@@ -189,7 +193,7 @@ class SupplierController extends Controller
 
             $check = SupplierModel::find($id);
             if ($check) {
-                $check->update($request->only(['supplier_nama', 'supplier_alamat', 'supplier_telp']));
+                $check->update($request->only(['supplier_kode', 'supplier_nama', 'supplier_alamat', 'supplier_telp']));
                 return response()->json([
                     'status' => true,
                     'message' => 'Data berhasil diupdate'
@@ -240,11 +244,11 @@ class SupplierController extends Controller
     }
 
     public function show_ajax(string $id)
-     {
-         $supplier = SupplierModel::find($id);
-     
-         return view('supplier.show_ajax', [
-             'supplier' => $supplier,
-         ]);
-     }
+    {
+        $supplier = SupplierModel::find($id);
+
+        return view('supplier.show_ajax', [
+            'supplier' => $supplier,
+        ]);
+    }
 }

@@ -13,15 +13,11 @@
  
      protected $table = 'm_barang';
      protected $primaryKey = 'barang_id';
-     protected $fillable = ['kategori_id', 'barang_kode', 'barang_nama', 'harga_beli', 'harga_jual', 'supplier_id'];
+     protected $fillable = ['kategori_id', 'barang_kode', 'barang_nama', 'harga_beli', 'harga_jual'];
  
      public function kategori()
      {
          return $this->belongsTo(KategoriModel::class, 'kategori_id', 'kategori_id');
      }
  
-     public function supplier() 
-     {
-         return $this->belongsTo(SupplierModel::class, 'supplier_id', 'supplier_id');
-     }
  }

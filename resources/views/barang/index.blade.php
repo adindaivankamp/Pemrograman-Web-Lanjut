@@ -6,8 +6,7 @@
             <h3 class="card-title mb-0">{{ $page->title }}</h3>
             <div class="ml-auto">
                 <a class="btn btn-sm btn-primary" href="{{ url('barang/create') }}">Tambah</a>
-                <button onclick="modalAction('{{ url('barang/create_ajax') }}')" class="btn btn-sm btn-success mt-1">Tambah
-                    Ajax</button>
+                <button onclick="modalAction('{{ url('barang/create_ajax') }}')" class="btn btn-sm btn-success mt-1">Tambah Ajax</button>
             </div>
         </div>
         <div class="card-body">
@@ -41,8 +40,7 @@
                             <th style="width: 150px;">Nama Barang</th>
                             <th style="width: 120px;">Harga Beli</th>
                             <th style="width: 120px;">Harga Jual</th>
-                            <th style="width: 140px;">Supplier</th>
-                            <th style="width: 220px;">Aksi</th>
+                            <th style="width: 160px;">Aksi</th>
                         </tr>
                     </thead>
                 </table>
@@ -50,30 +48,31 @@
         </div>
     </div>
 
-    <div id="myModal" class="modal fade animate shake" tabindex="-1" role="dialog" data- backdrop="static"
+    <div id="myModal" class="modal fade animate shake" tabindex="-1" role="dialog" data-backdrop="static"
         data-keyboard="false" data-width="75%" aria-hidden="true"></div>
 @endsection
 
 @push('js')
     <script>
         function modalAction(url = '') {
-            $('#myModal').load(url, function() {
+            $('#myModal').load(url, function () {
                 $('#myModal').modal('show');
             });
         }
 
         var dataBarang;
-        $(document).ready(function() {
+        $(document).ready(function () {
             dataBarang = $('#table_barang').DataTable({
                 serverSide: true,
                 ajax: {
                     url: "{{ url('barang/list') }}",
                     type: "POST",
-                    data: function(d) {
+                    data: function (d) {
                         d.kategori_id = $('#kategori_id').val();
                     }
                 },
-                columns: [{
+                columns: [
+                    {
                         data: "DT_RowIndex",
                         className: "text-center align-middle",
                         orderable: false,
@@ -96,20 +95,16 @@
                     {
                         data: "harga_beli",
                         className: "text-end align-middle",
-                        render: function(data) {
+                        render: function (data) {
                             return 'Rp ' + new Intl.NumberFormat('id-ID').format(data);
                         }
                     },
                     {
                         data: "harga_jual",
                         className: "text-end align-middle",
-                        render: function(data) {
+                        render: function (data) {
                             return 'Rp ' + new Intl.NumberFormat('id-ID').format(data);
                         }
-                    },
-                    {
-                        data: "supplier.supplier_nama",
-                        className: "align-middle"
                     },
                     {
                         data: "aksi",
@@ -120,7 +115,7 @@
                 ]
             });
 
-            $('#kategori_id').on('change', function() {
+            $('#kategori_id').on('change', function () {
                 dataBarang.ajax.reload();
             });
         });

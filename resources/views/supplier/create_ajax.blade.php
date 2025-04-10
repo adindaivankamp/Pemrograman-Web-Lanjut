@@ -9,21 +9,31 @@
                 </button>
             </div>
             <div class="modal-body">
+
                 <div class="form-group">
-                    <label>Nama supplier</label>
+                    <label>Kode Supplier</label>
+                    <input value="" type="text" name="supplier_kode" id="supplier_kode" class="form-control" required>
+                    <small id="error-supplier_kode" class="error-text form-text text-danger"></small>
+                </div>
+
+                <div class="form-group">
+                    <label>Nama Supplier</label>
                     <input value="" type="text" name="supplier_nama" id="supplier_nama" class="form-control" required>
                     <small id="error-supplier_nama" class="error-text form-text text-danger"></small>
                 </div>
+
                 <div class="form-group">
                     <label>Alamat Supplier</label>
                     <input value="" type="text" name="supplier_alamat" id="supplier_alamat" class="form-control" required>
                     <small id="error-supplier_alamat" class="error-text form-text text-danger"></small>
                 </div>
+
                 <div class="form-group">
                     <label>Telepon Supplier</label>
                     <input value="" type="text" name="supplier_telp" id="supplier_telp" class="form-control" required>
                     <small id="error-supplier_telp" class="error-text form-text text-danger"></small>
                 </div>
+                
             </div>
             <div class="modal-footer">
                 <button type="button" data-dismiss="modal" class="btn btn-warning">Batal</button>
@@ -37,6 +47,11 @@
 $(document).ready(function() {
     $("#form-tambah").validate({
         rules: {
+            supplier_kode: {
+                required: true,
+                minlength: 2,
+                maxlength: 20
+            },
             supplier_nama: {
                 required: true,
                 minlength: 3,

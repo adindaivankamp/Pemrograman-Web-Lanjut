@@ -47,10 +47,6 @@
                      <th>Harga Jual</th>
                      <td>Rp {{ number_format($barang->harga_beli, 0, ',', '.') }}</td>
                  </tr>
-                 <tr>
-                     <th>Supplier</th>
-                     <td>{{ $barang->supplier->supplier_nama }}</td>
-                 </tr>
              </table>
          </div>
          <div class="modal-footer">
