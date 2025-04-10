@@ -7,18 +7,19 @@ use Illuminate\Support\Facades\Schema;
 return new class extends Migration
 {
     /**
-     * Jalankan migrasi untuk membuat tabel `m_supplier`.
+     * Run the migrations.
      */
-    public function up(): void
+    public function up()
     {
         Schema::create('m_supplier', function (Blueprint $table) {
-            $table->id();
-            $table->string('kode_supplier');
-            $table->string('nama_supplier');
-            $table->string('alamat_supplier');
+            $table->bigIncrements('supplier_id'); // otomatis jadi kolom 'id' sebagai primary key
+            $table->string('supplier_kode')->unique();
+            $table->string('supplier_nama');
+            $table->text('supplier_alamat')->nullable();
             $table->timestamps();
         });
     }
+
     /**
      * Reverse the migrations.
      */
