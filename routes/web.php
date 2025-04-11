@@ -62,6 +62,8 @@ Route::middleware(['auth'])->group(function () { // artinya semua route di dalam
             Route::get('/user/{id}/delete_ajax', [UserController::class, 'confirm_ajax']); //untuk tampilkan form confirm delete user ajax
             Route::delete('/user/{id}/delete_ajax', [UserController::class, 'delete_ajax']); //untuk delete user ajax
             Route::delete('/user/{id}', [UserController::class, 'destroy']);     // Menghapus data user
+            Route::get('/user/import', [UserController::class, 'import']); // ajax form upload excel
+            Route::post('/user/import_ajax', [UserController::class, 'import_ajax']); // ajax import excel
     });
 
     Route::middleware(['authorize:ADM'])->group(function () { //hanya level admin yang dapat mengakses menu level

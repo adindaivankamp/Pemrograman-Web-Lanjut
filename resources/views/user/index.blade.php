@@ -3,11 +3,12 @@
 @section('content')
     <div class="card card-outline card-primary">
         <div class="card-header">
-            <h3 class="card-title">{{ $page->title }}</h3>
+            <h3 class="card-title">Daftar user</h3>
             <div class="card-tools">
-                <a class="btn btn-sm btn-primary mt-1" href="{{ url('user/create') }}">Tambah</a>
-                <button onclick="modalAction('{{ url('user/create_ajax') }}')" class="btn btn-sm btn-success mt-1">Tambah
-                    Ajax</button>
+                <button onclick="modalAction('{{ url('/user/import') }}')" class="btn btn-info">Import User</button>
+                <a href="{{ url('/user/create') }}" class="btn btn-primary">Tambah Data</a>
+                <button onclick="modalAction('{{ url('/user/create_ajax') }}')" class="btn btn-success">Tambah Data
+                    (Ajax)</button>
             </div>
         </div>
         <div class="card-body">

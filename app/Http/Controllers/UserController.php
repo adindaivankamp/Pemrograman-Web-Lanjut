@@ -5,7 +5,9 @@ namespace App\Http\Controllers;
 use App\Models\LevelModel;
 use App\Models\UserModel;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
+use PhpOffice\PhpSpreadsheet\IOFactory;
 use Yajra\DataTables\Facades\DataTables;
 
 class UserController extends Controller
@@ -460,5 +462,75 @@ class UserController extends Controller
             'user' => $user,
             'level' => $level
         ]);
+    }
+
+    public function import()
+    {
+        return view('user.import');
+    }
+
+    public function import_ajax(Request $request)
+    {
+        if ($request->ajax() || $request->wantsJson()) {
+            $rules = [
+                'file_user' => ['required', 'mimes:xlsx', 'max:1024']
+            ];
+
+            $validator = Validator::make($request->all(), $rules);
+
+            if ($validator->fails()) {
+                return response()->json([
+                    'status' => false,
+                    'message' => 'Validasi Gagal',
+                    'msgField' => $validator->errors()
+                ]);
+            }
+
+            $file = $request->file('file_user');
+
+            try {
+                $reader = IOFactory::createReader('Xlsx');
+                $reader->setReadDataOnly(true);
+                $spreadsheet = $reader->load($file->getRealPath());
+                $sheet = $spreadsheet->getActiveSheet();
+                $data = $sheet->toArray(null, false, true, true); // Kolom A, B, C, D
+
+                $inserted = 0;
+                foreach ($data as $key => $row) {
+                    if ($key === 1) continue; // Skip header
+
+                    $levelId  = $row['A'] ?? null;
+                    $username = $row['B'] ?? null;
+                    $nama     = $row['C'] ?? null;
+                    $password = $row['D'] ?? null;
+
+                    if ($levelId && $username && $nama && $password) {
+                        // Cek apakah username sudah ada
+                        $existing = UserModel::where('username', $username)->first();
+                        if (!$existing) {
+                            UserModel::create([
+                                'level_id' => $levelId,
+                                'username' => $username,
+                                'nama'     => $nama,
+                                'password' => Hash::make($password),
+                            ]);
+                            $inserted++;
+                        }
+                    }
+                }
+
+                return response()->json([
+                    'status' => true,
+                    'message' => "Import berhasil. $inserted data user ditambahkan."
+                ]);
+            } catch (\Exception $e) {
+                return response()->json([
+                    'status' => false,
+                    'message' => 'Terjadi kesalahan saat memproses file: ' . $e->getMessage()
+                ]);
+            }
+        }
+
+        return redirect('/');
     }
 }
