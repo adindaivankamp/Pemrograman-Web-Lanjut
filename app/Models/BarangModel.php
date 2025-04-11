@@ -5,7 +5,6 @@
  use Illuminate\Database\Eloquent\Factories\HasFactory;
  use Illuminate\Database\Eloquent\Model;
  use App\Models\KategoriModel;
- use App\Models\SupplierModel;
  
  class BarangModel extends Model
  {

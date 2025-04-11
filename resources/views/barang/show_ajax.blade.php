@@ -45,7 +45,7 @@
                  </tr>
                  <tr>
                      <th>Harga Jual</th>
-                     <td>Rp {{ number_format($barang->harga_beli, 0, ',', '.') }}</td>
+                     <td>Rp {{ number_format($barang->harga_jual, 0, ',', '.') }}</td>
                  </tr>
              </table>
          </div>
