@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\LevelModel;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use PhpOffice\PhpSpreadsheet\IOFactory;
 use Yajra\DataTables\Facades\DataTables;
 
 class LevelController extends Controller
@@ -315,5 +316,71 @@ class LevelController extends Controller
         return view('level.show_ajax', [
             'level' => $level
         ]);
+    }
+
+    public function import()
+    {
+        return view('level.import');
+    }
+
+    public function import_ajax(Request $request)
+    {
+        if ($request->ajax() || $request->wantsJson()) {
+            $rules = [
+                'file_level' => ['required', 'mimes:xlsx', 'max:1024']
+            ];
+
+            $validator = Validator::make($request->all(), $rules);
+
+            if ($validator->fails()) {
+                return response()->json([
+                    'status' => false,
+                    'message' => 'Validasi Gagal',
+                    'msgField' => $validator->errors()
+                ]);
+            }
+
+            $file = $request->file('file_level');
+
+            try {
+                $reader = IOFactory::createReader('Xlsx');
+                $reader->setReadDataOnly(true);
+                $spreadsheet = $reader->load($file->getRealPath());
+                $sheet = $spreadsheet->getActiveSheet();
+                $data = $sheet->toArray(null, false, true, true); // Kolom A, B
+
+                $inserted = 0;
+                foreach ($data as $key => $row) {
+                    if ($key === 1) continue; // Skip baris header
+
+                    $levelKode = $row['A'] ?? null;
+                    $levelNama = $row['B'] ?? null;
+
+                    if ($levelKode && $levelNama) {
+                        // Cek apakah level_kode sudah ada
+                        $existing = LevelModel::where('level_kode', $levelKode)->first();
+                        if (!$existing) {
+                            LevelModel::create([
+                                'level_kode' => $levelKode,
+                                'level_nama' => $levelNama
+                            ]);
+                            $inserted++;
+                        }
+                    }
+                }
+
+                return response()->json([
+                    'status' => true,
+                    'message' => "Import berhasil. $inserted data level ditambahkan."
+                ]);
+            } catch (\Exception $e) {
+                return response()->json([
+                    'status' => false,
+                    'message' => 'Terjadi kesalahan saat memproses file: ' . $e->getMessage()
+                ]);
+            }
+        }
+
+        return redirect('/');
     }
 }
