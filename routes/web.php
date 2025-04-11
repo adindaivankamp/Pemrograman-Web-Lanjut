@@ -102,6 +102,8 @@ Route::middleware(['auth'])->group(function () { // artinya semua route di dalam
             Route::delete('/kategori/{id}/delete_ajax', [KategoriController::class, 'delete_ajax']); // Untuk hapus data kategori Ajax
             Route::put('/kategori/{id}', [KategoriController::class, 'update']);         // Menyimpan perubahan data kategori
             Route::delete('/kategori/{id}', [KategoriController::class, 'destroy']);     // Menghapus data kategori
+            Route::get('/kategori/import', [KategoriController::class, 'import']); //ajax form upload excel
+            Route::post('/kategori/import_ajax', [KategoriController::class, 'import_ajax']); //ajax import excel
     });
 
     Route::middleware(['authorize:ADM,MNG'])->group(function () { //hanya level admin,manager yang dapat mengakses menu supplier
