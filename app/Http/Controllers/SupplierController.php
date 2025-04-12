@@ -1,10 +1,12 @@
 <?php
+
 namespace App\Http\Controllers;
 
 use App\Models\SupplierModel;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use PhpOffice\PhpSpreadsheet\IOFactory;
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use Yajra\DataTables\Facades\DataTables;
 
 class SupplierController extends Controller
@@ -259,68 +261,123 @@ class SupplierController extends Controller
     }
 
     public function import_ajax(Request $request)
-{
-    if ($request->ajax() || $request->wantsJson()) {
-        $rules = [
-            'file_supplier' => ['required', 'mimes:xlsx', 'max:2048']
-        ];
+    {
+        if ($request->ajax() || $request->wantsJson()) {
+            $rules = [
+                'file_supplier' => ['required', 'mimes:xlsx', 'max:2048']
+            ];
 
-        $validator = Validator::make($request->all(), $rules);
+            $validator = Validator::make($request->all(), $rules);
 
-        if ($validator->fails()) {
-            return response()->json([
-                'status' => false,
-                'message' => 'Validasi Gagal',
-                'msgField' => $validator->errors()
-            ]);
-        }
-
-        $file = $request->file('file_supplier');
-
-        try {
-            $reader = IOFactory::createReader('Xlsx');
-            $reader->setReadDataOnly(true);
-            $spreadsheet = $reader->load($file->getRealPath());
-            $sheet = $spreadsheet->getActiveSheet();
-            $data = $sheet->toArray(null, false, true, true); // Baca dengan kolom A, B, C, D
-
-            $inserted = 0;
-            foreach ($data as $key => $row) {
-                if ($key === 1) continue; // Skip header
-
-                $supplierKode   = $row['A'] ?? null;
-                $supplierNama   = $row['B'] ?? null;
-                $supplierAlamat = $row['C'] ?? null;
-                $supplierTelp   = $row['D'] ?? null;
-
-                if ($supplierKode && $supplierNama && $supplierAlamat && $supplierTelp) {
-                    // Cek apakah kode supplier sudah ada
-                    $existing = SupplierModel::where('supplier_kode', $supplierKode)->first();
-                    if (!$existing) {
-                        SupplierModel::create([
-                            'supplier_kode'   => $supplierKode,
-                            'supplier_nama'   => $supplierNama,
-                            'supplier_alamat' => $supplierAlamat,
-                            'supplier_telp'   => $supplierTelp,
-                        ]);
-                        $inserted++;
-                    }
-                }
+            if ($validator->fails()) {
+                return response()->json([
+                    'status' => false,
+                    'message' => 'Validasi Gagal',
+                    'msgField' => $validator->errors()
+                ]);
             }
 
-            return response()->json([
-                'status' => true,
-                'message' => "Import berhasil. $inserted data supplier ditambahkan."
-            ]);
-        } catch (\Exception $e) {
-            return response()->json([
-                'status' => false,
-                'message' => 'Terjadi kesalahan saat memproses file: ' . $e->getMessage()
-            ]);
+            $file = $request->file('file_supplier');
+
+            try {
+                $reader = IOFactory::createReader('Xlsx');
+                $reader->setReadDataOnly(true);
+                $spreadsheet = $reader->load($file->getRealPath());
+                $sheet = $spreadsheet->getActiveSheet();
+                $data = $sheet->toArray(null, false, true, true); // Baca dengan kolom A, B, C, D
+
+                $inserted = 0;
+                foreach ($data as $key => $row) {
+                    if ($key === 1) continue; // Skip header
+
+                    $supplierKode   = $row['A'] ?? null;
+                    $supplierNama   = $row['B'] ?? null;
+                    $supplierAlamat = $row['C'] ?? null;
+                    $supplierTelp   = $row['D'] ?? null;
+
+                    if ($supplierKode && $supplierNama && $supplierAlamat && $supplierTelp) {
+                        // Cek apakah kode supplier sudah ada
+                        $existing = SupplierModel::where('supplier_kode', $supplierKode)->first();
+                        if (!$existing) {
+                            SupplierModel::create([
+                                'supplier_kode'   => $supplierKode,
+                                'supplier_nama'   => $supplierNama,
+                                'supplier_alamat' => $supplierAlamat,
+                                'supplier_telp'   => $supplierTelp,
+                            ]);
+                            $inserted++;
+                        }
+                    }
+                }
+
+                return response()->json([
+                    'status' => true,
+                    'message' => "Import berhasil. $inserted data supplier ditambahkan."
+                ]);
+            } catch (\Exception $e) {
+                return response()->json([
+                    'status' => false,
+                    'message' => 'Terjadi kesalahan saat memproses file: ' . $e->getMessage()
+                ]);
+            }
         }
+
+        return redirect('/');
     }
 
-    return redirect('/');
-}
+    public function export_excel()
+    {
+        // ambil data supplier yang akan di export
+        $supplier = SupplierModel::select('supplier_kode','supplier_nama', 'supplier_alamat', 'supplier_telp',)
+            ->get();
+
+        // load library excel
+        $spreadsheet = new Spreadsheet();
+        $sheet = $spreadsheet->getActiveSheet(); // ambil sheet yang aktif
+
+        $sheet->setCellValue('A1', 'ID');
+        $sheet->setCellValue('B1', 'Kode Supplier');
+        $sheet->setCellValue('C1', 'Nama Supplier');
+        $sheet->setCellValue('D1', 'Alamat Supplier');
+        $sheet->setCellValue('E1', 'Telepon Supplier');
+
+
+        $sheet->getStyle('A1:E1')->getFont()->setBold(true); // bold header
+
+        $no = 1; // nomor data dimulai dari 1
+        $baris = 2; // baris data dimulai dari baris ke 2
+
+        foreach ($supplier as $key => $value) {
+            $sheet->setCellValue('A' . $baris, $no);
+            $sheet->setCellValue('B' . $baris, $value->supplier_kode);
+            $sheet->setCellValue('C' . $baris, $value->supplier_nama);
+            $sheet->setCellValue('D' . $baris, $value->supplier_alamat);
+            $sheet->setCellValue('E' . $baris, $value->supplier_telp);
+
+            $baris++;
+            $no++;
+        }
+
+        foreach (range('A', 'E') as $columnID) {
+            $sheet->getColumnDimension($columnID)->setAutoSize(true); // set auto size untuk kolom
+        }
+
+        $sheet->setTitle('Data Supplier'); // set title sheet
+
+        $writer = IOFactory::createWriter($spreadsheet, 'Xlsx');
+        $filename = 'Data Supplier ' . date('Y-m-d H:i:s') . '.xlsx';
+
+        header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+        header('Content-Disposition: attachment;filename="' . $filename . '"');
+        header('Cache-Control: max-age=0');
+        header('Cache-Control: max-age=1');
+        header('Expires: Mon, 26 Jul 1997 05:00:00 GMT');
+        header('Last-Modified: ' . gmdate('D, d M Y H:i:s') . ' GMT');
+        header('Cache-Control: cache, must-revalidate');
+        header('Pragma: public');
+
+        $writer->save('php://output');
+        exit;
+    } // end function export_excel
 
 }
