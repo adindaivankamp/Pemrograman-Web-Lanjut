@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 use App\Models\SupplierModel;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use PhpOffice\PhpSpreadsheet\IOFactory;
 use Yajra\DataTables\Facades\DataTables;
 
 class SupplierController extends Controller
@@ -251,4 +252,75 @@ class SupplierController extends Controller
             'supplier' => $supplier,
         ]);
     }
+
+    public function import()
+    {
+        return view('supplier.import');
+    }
+
+    public function import_ajax(Request $request)
+{
+    if ($request->ajax() || $request->wantsJson()) {
+        $rules = [
+            'file_supplier' => ['required', 'mimes:xlsx', 'max:2048']
+        ];
+
+        $validator = Validator::make($request->all(), $rules);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Validasi Gagal',
+                'msgField' => $validator->errors()
+            ]);
+        }
+
+        $file = $request->file('file_supplier');
+
+        try {
+            $reader = IOFactory::createReader('Xlsx');
+            $reader->setReadDataOnly(true);
+            $spreadsheet = $reader->load($file->getRealPath());
+            $sheet = $spreadsheet->getActiveSheet();
+            $data = $sheet->toArray(null, false, true, true); // Baca dengan kolom A, B, C, D
+
+            $inserted = 0;
+            foreach ($data as $key => $row) {
+                if ($key === 1) continue; // Skip header
+
+                $supplierKode   = $row['A'] ?? null;
+                $supplierNama   = $row['B'] ?? null;
+                $supplierAlamat = $row['C'] ?? null;
+                $supplierTelp   = $row['D'] ?? null;
+
+                if ($supplierKode && $supplierNama && $supplierAlamat && $supplierTelp) {
+                    // Cek apakah kode supplier sudah ada
+                    $existing = SupplierModel::where('supplier_kode', $supplierKode)->first();
+                    if (!$existing) {
+                        SupplierModel::create([
+                            'supplier_kode'   => $supplierKode,
+                            'supplier_nama'   => $supplierNama,
+                            'supplier_alamat' => $supplierAlamat,
+                            'supplier_telp'   => $supplierTelp,
+                        ]);
+                        $inserted++;
+                    }
+                }
+            }
+
+            return response()->json([
+                'status' => true,
+                'message' => "Import berhasil. $inserted data supplier ditambahkan."
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Terjadi kesalahan saat memproses file: ' . $e->getMessage()
+            ]);
+        }
+    }
+
+    return redirect('/');
+}
+
 }
