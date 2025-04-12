@@ -6,6 +6,7 @@ use App\Http\Controllers\LevelController;
 use App\Http\Controllers\SupplierController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\WelcomeController;
+use App\Http\Controllers\AuthController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -35,7 +36,7 @@ Route::get('user/ubah/{id}', [UserController::class, 'ubah']);
 Route::put('/user/ubah_simpan/{id}', [UserController::class, 'ubah_simpan']);
 Route::get('/user/hapus/{id}', [UserController::class, 'hapus']);
 
-Route::get('/', [WelcomeController::class, 'index']);
+// Route::get('/', [WelcomeController::class, 'index']);
 
 Route::group(['prefix' => 'user'], function () {
     Route::get('/', [UserController::class, 'index']);         // menampilkan halaman awal user
@@ -132,4 +133,18 @@ Route::group(['prefix' => 'barang'], function () {
     Route::get('/{id}/edit',[BarangController::class, 'edit']);
     Route::put('/{id}',[BarangController::class, 'update']);
     Route::delete('/{id}',[BarangController::class, 'destroy']);
+});
+
+//Jobsheet 7
+    Route::pattern('id', '[0-9]+'); // artinya ketika ada parameter {id}, maka harus berupa angka
+
+    Route::get("login", [AuthController::class, "login"])->name("login");
+    Route::post('login', [AuthController::class, 'postlogin']);
+    Route::get('logout', [AuthController::class, 'logout'])->middleware('auth');
+
+    Route::middleware(['auth'])->group(function () { // artinya semua route di dalam group ini harus login dulu
+
+    // masukkan semua route yang perlu autentikasi di sini
+    Route::get('/', [WelcomeController::class, 'index']);
+
 });
