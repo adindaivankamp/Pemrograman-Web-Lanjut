@@ -8,26 +8,23 @@ use Symfony\Component\HttpFoundation\Response;
 
 class AuthorizeUser
 {
-    /**
-     * Handle an incoming request.
-     *
-     * @param  \Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response)  $next
-     */
     public function handle(Request $request, Closure $next, ...$roles): Response
     {
         $user = $request->user();
-    
+
+        // Cek dulu apakah user-nya null (belum login)
         if (!$user) {
-            return redirect()->route('login'); // atau bisa redirect ke halaman lain yang kamu mau
+            return redirect()->route('login'); // Atau arahkan ke rute login kamu
         }
-    
-        $user_role = $user->getRole(); // baru akses setelah user terjamin ada
-    
+
+        $user_role = $user->getRole(); // Baru ambil role-nya
+
+        // Cek apakah role-nya termasuk yang diizinkan
         if (in_array($user_role, $roles)) {
-            return $next($request); // lanjutkan kalau role cocok
+            return $next($request);
         }
-    
-        abort(403, 'Forbidden. Kamu tidak punya akses ke halaman ini'); // tampilkan error kalau role-nya gak cocok
+
+        // Kalau role-nya gak sesuai, kasih forbidden
+        abort(403, 'Unauthorized');
     }
-    
 }

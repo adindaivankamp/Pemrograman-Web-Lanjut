@@ -159,7 +159,3 @@ Route::middleware(['authorize:ADMIN, STF'])->group(function () {
         Route::delete('/{id}',[BarangController::class, 'destroy']);
     });
 });
-
-
-
-
