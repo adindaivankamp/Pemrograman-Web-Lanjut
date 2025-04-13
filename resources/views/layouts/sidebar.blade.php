@@ -1,6 +1,18 @@
 <div class="sidebar">
-    <!-- SidebarSearch Form -->
-    <div class="form-inline mt-2">
+
+    <!-- User Profile at the Top -->
+    <div class="user-profile text-center py-3">
+        <a href="{{ url('/profile') }}" class="d-block {{ $activeMenu == 'profile' ? 'active' : '' }}">
+            <img src="{{ Auth::user()->profile_picture ? asset('uploads/profile/' . Auth::user()->profile_picture) : asset('profile.png') }}"
+                 class="img-circle elevation-2"
+                 alt="User Image"
+                 style="width: 60px; height: 60px; object-fit: cover;">
+            <p class="mt-2 mb-0 text-white">{{ Auth::user()->nama }}</p>
+        </a>
+    </div>
+
+    <!-- Sidebar Search Form -->
+    <div class="form-inline px-2">
         <div class="input-group" data-widget="sidebar-search">
             <input class="form-control form-control-sidebar" type="search" placeholder="Search" aria-label="Search">
             <div class="input-group-append">
@@ -14,8 +26,8 @@
     <!-- Sidebar Menu -->
     <nav class="mt-2">
         <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
-            </li>
 
+            <!-- Data Pengguna -->
             <li class="nav-header">Data Pengguna</li>
             <li class="nav-item">
                 <a href="{{ url('/level') }}" class="nav-link {{ $activeMenu == 'level' ? 'active' : '' }}">
@@ -30,6 +42,7 @@
                 </a>
             </li>
 
+            <!-- Data Barang -->
             <li class="nav-header">Data Barang</li>
             <li class="nav-item">
                 <a href="{{ url('/kategori') }}" class="nav-link {{ $activeMenu == 'kategori' ? 'active' : '' }}">
@@ -44,6 +57,7 @@
                 </a>
             </li>
 
+            <!-- Data Transaksi -->
             <li class="nav-header">Data Transaksi</li>
             <li class="nav-item">
                 <a href="{{ url('/stok') }}" class="nav-link {{ $activeMenu == 'stok' ? 'active' : '' }}">
@@ -52,11 +66,13 @@
                 </a>
             </li>
             <li class="nav-item">
-                <a href="{{ url('/barang') }}" class="nav-link {{ $activeMenu == 'penjualan' ? 'active' : '' }}">
+                <a href="{{ url('/penjualan') }}" class="nav-link {{ $activeMenu == 'penjualan' ? 'active' : '' }}">
                     <i class="nav-icon fas fa-cash-register"></i>
                     <p>Transaksi Penjualan</p>
                 </a>
             </li>
+
+            <!-- Data Supplier -->
             <li class="nav-header">Data Supplier</li>
             <li class="nav-item">
                 <a href="{{ url('/supplier') }}" class="nav-link {{ $activeMenu == 'supplier' ? 'active' : '' }}">
@@ -64,6 +80,8 @@
                     <p>Supplier Barang</p>
                 </a>
             </li>
+
+            <!-- Logout -->
             <li class="nav-item">
                 <a href="{{ url('/logout') }}" class="nav-link bg-danger text-white">
                     <i class="nav-icon fas fa-sign-out-alt"></i>
