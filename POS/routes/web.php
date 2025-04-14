@@ -52,7 +52,7 @@ Route::middleware(['auth'])->group(function () { // artinya semua route di dalam
             Route::post('/user/list', [UserController::class, 'list']);          // Menampilkan data user dalam bentuk json untuk datatables
             Route::get('/user/create', [UserController::class, 'create']);       // Menampilkan halaman form tambah user
             Route::post('/user', [UserController::class, 'store']);             // Menyimpan data user baru
-            Route::get('/create_ajax', [UserController::class, 'create_ajax']);    // Menampilkan halaman form tambah user Ajax
+            Route::get('/user/create_ajax', [UserController::class, 'create_ajax']);    // Menampilkan halaman form tambah user Ajax
             Route::post('/user/ajax', [UserController::class, 'store_ajax']);          // Menyimpan data user baru Ajax
             Route::get('/user/{id}', [UserController::class, 'show']);           // Menampilkan detail user
             Route::get('user/{id}/edit', [UserController::class, 'edit']);      // Menampilkan halaman form edit user
