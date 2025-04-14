@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\SupplierModel;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use PhpOffice\PhpSpreadsheet\IOFactory;
@@ -30,7 +31,7 @@ class SupplierController extends Controller
 
     public function list()
     {
-        $supplier = SupplierModel::select('supplier_id', 'supplier_kode', 'supplier_nama', 'supplier_alamat', 'supplier_telp');
+        $supplier = SupplierModel::select('supplier_id', 'supplier_kode', 'supplier_nama', 'supplier_alamat');
 
         return DataTables::of($supplier)
             ->addIndexColumn()
@@ -63,10 +64,9 @@ class SupplierController extends Controller
             'supplier_kode' => 'required|string|max:10|unique:m_supplier,supplier_kode',
             'supplier_nama' => 'required|string|max:100',
             'supplier_alamat' => 'required|string|max:100',
-            'supplier_telp' => 'required|string|max:20',
         ]);
 
-        SupplierModel::create($request->only(['supplier_kode', 'supplier_nama', 'supplier_alamat', 'supplier_telp']));
+        SupplierModel::create($request->only(['supplier_kode', 'supplier_nama', 'supplier_alamat']));
 
         return redirect('/supplier')->with('success', 'Data supplier berhasil disimpan');
     }
@@ -107,10 +107,9 @@ class SupplierController extends Controller
             'supplier_kode' => 'required|string|max:10|unique:m_supplier,supplier_kode,' . $id . ',supplier_id',
             'supplier_nama' => 'required|string|max:100',
             'supplier_alamat' => 'required|string|max:100',
-            'supplier_telp' => 'required|string|max:20',
         ]);
 
-        SupplierModel::find($id)->update($request->only(['supplier_kode', 'supplier_nama', 'supplier_alamat', 'supplier_telp']));
+        SupplierModel::find($id)->update($request->only(['supplier_kode', 'supplier_nama', 'supplier_alamat']));
 
         return redirect('/supplier')->with('success', 'Data supplier berhasil diubah');
     }
@@ -144,7 +143,6 @@ class SupplierController extends Controller
                 'supplier_kode' => 'required|string|max:10|unique:m_supplier,supplier_kode',
                 'supplier_nama' => 'required|string|max:100',
                 'supplier_alamat' => 'required|string|max:100',
-                'supplier_telp' => 'required|string|max:20'
             ];
 
             $validator = Validator::make($request->all(), $rules);
@@ -157,7 +155,7 @@ class SupplierController extends Controller
                 ]);
             }
 
-            SupplierModel::create($request->only(['supplier_kode', 'supplier_nama', 'supplier_alamat', 'supplier_telp']));
+            SupplierModel::create($request->only(['supplier_kode', 'supplier_nama', 'supplier_alamat']));
 
             return response()->json([
                 'status' => true,
@@ -181,7 +179,6 @@ class SupplierController extends Controller
                 'supplier_kode' => 'required|string|max:10|unique:m_supplier,supplier_kode,' . $id . ',supplier_id',
                 'supplier_nama' => 'required|string|max:100',
                 'supplier_alamat' => 'required|string|max:100',
-                'supplier_telp' => 'required|string|max:20'
             ];
 
             $validator = Validator::make($request->all(), $rules);
@@ -196,7 +193,7 @@ class SupplierController extends Controller
 
             $check = SupplierModel::find($id);
             if ($check) {
-                $check->update($request->only(['supplier_kode', 'supplier_nama', 'supplier_alamat', 'supplier_telp']));
+                $check->update($request->only(['supplier_kode', 'supplier_nama', 'supplier_alamat']));
                 return response()->json([
                     'status' => true,
                     'message' => 'Data berhasil diupdate'
@@ -284,7 +281,7 @@ class SupplierController extends Controller
                 $reader->setReadDataOnly(true);
                 $spreadsheet = $reader->load($file->getRealPath());
                 $sheet = $spreadsheet->getActiveSheet();
-                $data = $sheet->toArray(null, false, true, true); // Baca dengan kolom A, B, C, D
+                $data = $sheet->toArray(null, false, true, true); // Baca dengan kolom A, B, C
 
                 $inserted = 0;
                 foreach ($data as $key => $row) {
@@ -293,17 +290,14 @@ class SupplierController extends Controller
                     $supplierKode   = $row['A'] ?? null;
                     $supplierNama   = $row['B'] ?? null;
                     $supplierAlamat = $row['C'] ?? null;
-                    $supplierTelp   = $row['D'] ?? null;
 
-                    if ($supplierKode && $supplierNama && $supplierAlamat && $supplierTelp) {
-                        // Cek apakah kode supplier sudah ada
+                    if ($supplierKode && $supplierNama && $supplierAlamat) {
                         $existing = SupplierModel::where('supplier_kode', $supplierKode)->first();
                         if (!$existing) {
                             SupplierModel::create([
                                 'supplier_kode'   => $supplierKode,
                                 'supplier_nama'   => $supplierNama,
                                 'supplier_alamat' => $supplierAlamat,
-                                'supplier_telp'   => $supplierTelp,
                             ]);
                             $inserted++;
                         }
@@ -327,42 +321,36 @@ class SupplierController extends Controller
 
     public function export_excel()
     {
-        // ambil data supplier yang akan di export
-        $supplier = SupplierModel::select('supplier_kode','supplier_nama', 'supplier_alamat', 'supplier_telp',)
-            ->get();
+        $supplier = SupplierModel::select('supplier_kode', 'supplier_nama', 'supplier_alamat')->get();
 
-        // load library excel
         $spreadsheet = new Spreadsheet();
-        $sheet = $spreadsheet->getActiveSheet(); // ambil sheet yang aktif
+        $sheet = $spreadsheet->getActiveSheet();
 
         $sheet->setCellValue('A1', 'ID');
         $sheet->setCellValue('B1', 'Kode Supplier');
         $sheet->setCellValue('C1', 'Nama Supplier');
         $sheet->setCellValue('D1', 'Alamat Supplier');
-        $sheet->setCellValue('E1', 'Telepon Supplier');
 
+        $sheet->getStyle('A1:D1')->getFont()->setBold(true);
 
-        $sheet->getStyle('A1:E1')->getFont()->setBold(true); // bold header
+        $no = 1;
+        $baris = 2;
 
-        $no = 1; // nomor data dimulai dari 1
-        $baris = 2; // baris data dimulai dari baris ke 2
-
-        foreach ($supplier as $key => $value) {
+        foreach ($supplier as $value) {
             $sheet->setCellValue('A' . $baris, $no);
             $sheet->setCellValue('B' . $baris, $value->supplier_kode);
             $sheet->setCellValue('C' . $baris, $value->supplier_nama);
             $sheet->setCellValue('D' . $baris, $value->supplier_alamat);
-            $sheet->setCellValue('E' . $baris, $value->supplier_telp);
 
             $baris++;
             $no++;
         }
 
-        foreach (range('A', 'E') as $columnID) {
-            $sheet->getColumnDimension($columnID)->setAutoSize(true); // set auto size untuk kolom
+        foreach (range('A', 'D') as $columnID) {
+            $sheet->getColumnDimension($columnID)->setAutoSize(true);
         }
 
-        $sheet->setTitle('Data Supplier'); // set title sheet
+        $sheet->setTitle('Data Supplier');
 
         $writer = IOFactory::createWriter($spreadsheet, 'Xlsx');
         $filename = 'Data Supplier ' . date('Y-m-d H:i:s') . '.xlsx';
@@ -378,6 +366,17 @@ class SupplierController extends Controller
 
         $writer->save('php://output');
         exit;
-    } // end function export_excel
+    }
 
+    public function export_pdf()
+    {
+        $supplier = SupplierModel::select('supplier_kode', 'supplier_nama', 'supplier_alamat')->get();
+
+        $pdf = Pdf::loadView('supplier.export_pdf', ['supplier' => $supplier]);
+        $pdf->setPaper('a4', 'portrait');
+        $pdf->setOption('isRemoteEnabled', true);
+        $pdf->render();
+
+        return $pdf->stream('Data Supplier ' . date('Y-m-d H:i:s') . '.pdf');
+    }
 }

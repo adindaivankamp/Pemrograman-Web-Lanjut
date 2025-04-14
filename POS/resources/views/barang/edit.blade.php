@@ -1,5 +1,4 @@
 @extends('layouts.template')
-
 @section('content')
 <div class="card card-outline card-primary">
     <div class="card-header">
@@ -17,15 +16,13 @@
             <form method="POST" action="{{ url('/barang/'.$barang->barang_id) }}" class="form-horizontal">
                 @csrf
                 {!! method_field('PUT') !!}
-                <!-- tambahkan baris ini untuk proses edit yang butuh method PUT -->
-
                 <div class="form-group row">
                     <label class="col-1 control-label col-form-label">Kategori</label>
                     <div class="col-11">
                         <select class="form-control" id="kategori_id" name="kategori_id" required>
                             <option value="">- Pilih Kategori -</option>
                             @foreach($kategori as $item)
-                                <option value="{{ $item->kategori_id }}" @if($item->kategori_id == $barang->kategori_id) selected @endif>{{ $item->kategori_nama }}</option>
+                                <option value="{{ $item->id }}" @if($item->id == $barang->kategori_id) selected @endif>{{ $item->kategori_nama }}</option>
                             @endforeach
                         </select>
                         @error('kategori_id')
@@ -33,7 +30,6 @@
                         @enderror
                     </div>
                 </div>
-
                 <div class="form-group row">
                     <label class="col-1 control-label col-form-label">Kode Barang</label>
                     <div class="col-11">
@@ -43,7 +39,6 @@
                         @enderror
                     </div>
                 </div>
-    
                 <div class="form-group row">
                     <label class="col-1 control-label col-form-label">Nama Barang</label>
                     <div class="col-11">
@@ -53,27 +48,36 @@
                         @enderror
                     </div>
                 </div>
-                
                 <div class="form-group row">
                     <label class="col-1 control-label col-form-label">Harga Beli</label>
                     <div class="col-11">
-                        <input type="text" class="form-control" id="harga_beli" name="harga_beli" value="{{ old('harga_beli', $barang->harga_beli) }}" required>
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text">Rp</span>
+                            </div>
+                            <input type="text" class="form-control" id="display_harga_beli" value="{{ old('harga_beli', number_format($barang->harga_beli, 0, ',', ' ')) }}" required oninput="formatNumber(this, 'harga_beli')">
+                            <input type="hidden" name="harga_beli" id="harga_beli" value="{{ old('harga_beli', $barang->harga_beli) }}">
+                        </div>
                         @error('harga_beli')
                             <small class="form-text text-danger">{{ $message }}</small>
                         @enderror
                     </div>
                 </div>
-    
                 <div class="form-group row">
                     <label class="col-1 control-label col-form-label">Harga Jual</label>
                     <div class="col-11">
-                        <input type="text" class="form-control" id="harga_jual" name="harga_jual" value="{{ old('harga_jual', $barang->harga_jual) }}" required>
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text">Rp</span>
+                            </div>
+                            <input type="text" class="form-control" id="display_harga_jual" value="{{ old('harga_jual', number_format($barang->harga_jual, 0, ',', ' ')) }}" required oninput="formatNumber(this, 'harga_jual')">
+                            <input type="hidden" name="harga_jual" id="harga_jual" value="{{ old('harga_jual', $barang->harga_jual) }}">
+                        </div>
                         @error('harga_jual')
                             <small class="form-text text-danger">{{ $message }}</small>
                         @enderror
                     </div>
                 </div>
-
                 <div class="form-group row">
                     <label class="col-1 control-label col-form-label"></label>
                     <div class="col-11">
@@ -87,8 +91,15 @@
 </div>
 @endsection
 
+<script>
+    function formatNumber(input, hiddenInputId) {
+        let value = input.value.replace(/\D/g, '');
+        document.getElementById(hiddenInputId).value = value;
+        input.value = value.replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
+    }
+</script>
+
 @push('css')
 @endpush
-
 @push('js')
 @endpush

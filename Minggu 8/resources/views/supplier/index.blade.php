@@ -8,6 +8,7 @@
                 <button onclick="modalAction('{{ url('/supplier/import') }}')" class="btn btn-info">Import Supplier</button>
                 {{-- <a href="{{ url('/supplier/create') }}" class="btn btn-primary">Tambah Data</a> --}}
                 <a href="{{ url('/supplier/export_excel') }}" class="btn btn-primary"><i class="fa fa-file-excel"></i>Export Supplier</a>
+                <a href="{{ url('/supplier/export_pdf') }}" class="btn btn-warning"><i class="fa fa-file-pdf"></i> Export Supplier</a>
                 <button onclick="modalAction('{{ url('/supplier/create_ajax') }}')" class="btn btn-success">Tambah Data
                     (Ajax)</button>
             </div>
@@ -26,7 +27,6 @@
                         <th>Kode Supplier</th> 
                         <th>Nama Supplier</th>
                         <th>Alamat Supplier</th>
-                        <th>Telepon Supplier</th>
                         <th>Aksi</th>
                     </tr>
                 </thead>
@@ -80,11 +80,6 @@
                     },
                     {
                         data: "supplier_alamat",
-                        orderable: true,
-                        searchable: true
-                    },
-                    {
-                        data: "supplier_telp",
                         orderable: true,
                         searchable: true
                     },

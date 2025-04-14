@@ -41,6 +41,8 @@ Route::post('login', [AuthController::class, 'postLogin']);
 Route::get('logout', [AuthController::class, 'logout'])->middleware('auth');
 Route::get('register', [AuthController::class, 'register'])->name('register');
 Route::post('register', [AuthController::class, 'postRegister']);
+Route::get('profile', [AuthController::class, 'profile'])->middleware('auth')->name('profile');
+ Route::post('profile/update', [AuthController::class, 'update'])->middleware('auth');
 
 Route::middleware(['auth'])->group(function () { // artinya semua route di dalam group ini harus login dulu
     Route::get('/', [WelcomeController::class, 'index']);
@@ -65,6 +67,7 @@ Route::middleware(['auth'])->group(function () { // artinya semua route di dalam
             Route::get('/user/import', [UserController::class, 'import']); // ajax form upload excel
             Route::post('/user/import_ajax', [UserController::class, 'import_ajax']); // ajax import excel
             Route::get('/user/export_excel',[UserController::class, 'export_excel']); //export excel
+            Route::get('/user/export_pdf',[UserController::class, 'export_pdf']); //export pdf
     });
 
     Route::middleware(['authorize:ADM'])->group(function () { //hanya level admin yang dapat mengakses menu level
@@ -86,6 +89,7 @@ Route::middleware(['auth'])->group(function () { // artinya semua route di dalam
             Route::get('/level/import', [LevelController::class, 'import']); //ajax form upload excel
             Route::post('/level/import_ajax', [LevelController::class, 'import_ajax']); // ajax import excel
             Route::get('/level/export_excel',[LevelController::class, 'export_excel']); //export excel
+            Route::get('/level/export_pdf', [LevelController::class, 'export_pdf']); // export pdf
     });
 
     Route::middleware(['authorize:ADM,MNG,STF'])->group(function () { //hanya level admin,manager,staff yang dapat mengakses menu user
@@ -107,6 +111,7 @@ Route::middleware(['auth'])->group(function () { // artinya semua route di dalam
             Route::get('/kategori/import', [KategoriController::class, 'import']); //ajax form upload excel
             Route::post('/kategori/import_ajax', [KategoriController::class, 'import_ajax']); //ajax import excel
             Route::get('/kategori/export_excel',[KategoriController::class, 'export_excel']); //export excel
+            Route::get('/kategori/export_pdf', [KategoriController::class, 'export_pdf']); // export pdf
     });
 
     Route::middleware(['authorize:ADM,MNG'])->group(function () { //hanya level admin,manager yang dapat mengakses menu supplier
@@ -128,6 +133,7 @@ Route::middleware(['auth'])->group(function () { // artinya semua route di dalam
             Route::get('/supplier/import', [SupplierController::class, 'import']); //ajax form upload excel
             Route::post('/supplier/import_ajax', [SupplierController::class, 'import_ajax']); //ajax import excel
             Route::get('/supplier/export_excel',[SupplierController::class, 'export_excel']); //export excel
+            Route::get('/supplier/export_pdf', [SupplierController::class, 'export_pdf']); // export pdf
     });
 
     Route::middleware(['authorize:ADM,MNG,STF'])->group(function () { //hanya level admin,manager,staff yang dapat mengakses menu barang
@@ -149,5 +155,6 @@ Route::middleware(['auth'])->group(function () { // artinya semua route di dalam
             Route::get('/barang/import', [BarangController::class, 'import']); // ajax form upload excel
             Route::post('/barang/import_ajax', [BarangController::class, 'import_ajax']); // ajax import excel
             Route::get('/barang/export_excel',[BarangController::class, 'export_excel']); //export excel
+            Route::get('/barang/export_pdf', [BarangController::class, 'export_pdf']); // export pdf
     });
 });
