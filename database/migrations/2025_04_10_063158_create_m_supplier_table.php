@@ -4,19 +4,25 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration {
-    public function up(): void
+return new class extends Migration
+{
+    /**
+     * Run the migrations.
+     */
+    public function up()
     {
         Schema::create('m_supplier', function (Blueprint $table) {
-            $table->id('supplier_id');
-            $table->string('supplier_kode', 20)->unique(); // Kode unik supplier
-            $table->string('supplier_nama', 100);
+            $table->bigIncrements('supplier_id'); // otomatis jadi kolom 'id' sebagai primary key
+            $table->string('supplier_kode')->unique();
+            $table->string('supplier_nama');
             $table->text('supplier_alamat')->nullable();
-            $table->string('supplier_telp', 20)->nullable();
             $table->timestamps();
         });
     }
 
+    /**
+     * Reverse the migrations.
+     */
     public function down(): void
     {
         Schema::dropIfExists('m_supplier');
